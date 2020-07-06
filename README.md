@@ -10,7 +10,9 @@ ROS dockerfile集成
 
 1. ROS melodic
 
+```
 docker build -t moliqingwa/ros-vnc:melodic -f Dockerfile.ros.melodic .
+```
 
 2. ROS noetic
 
