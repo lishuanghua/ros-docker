@@ -89,7 +89,7 @@ RUN git clone https://gitee.com/moliqingwa/noVNC.git /usr/local/noVNC
 RUN cp /usr/local/noVNC/vnc.html /usr/local/noVNC/index.html
 
 # Clone websockify for noVNC
-Run git clone https://gitee.com/moliqingwa/websockify.git /usr/local/noVNC/utils/websockify
+RUN git clone https://gitee.com/moliqingwa/websockify.git /usr/local/noVNC/utils/websockify
 
 ########################################################
 # ROS
@@ -104,8 +104,8 @@ RUN sh -c '. /etc/lsb-release && echo "deb https://mirrors.tuna.tsinghua.edu.cn/
     apt-get -y install ros-melodic-desktop-full && \
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
     echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
-RUN apt-get -y install ros-melodic-moveit \
-    ros-melodic-trac-ik
+RUN apt-get -y install ros-melodic-moveit 
+RUN apt-get -y update && apt-get install -y ros-melodic-trac-ik
 
 # 使用Python2
 RUN ln -s -f /usr/bin/python2 /usr/bin/python && \
@@ -141,7 +141,7 @@ RUN /bin/bash /root/install-dependencies.sh && rm /root/install-dependencies.sh 
 #     python3-defusedxml \
 #     python3-netifaces
 
-COPY image/rosdep /usr/bin/
+# COPY image/rosdep /usr/bin/
 RUN echo "151.101.84.133  raw.githubusercontent.com" >> /etc/hosts
 
 # 替换桌面背景（Dockerfile同目录下有图片screen-4.jpg）
@@ -165,6 +165,14 @@ RUN apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
     perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
     ldconfig && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN mkdir -p /root/catkin_ws/src/ && \
+    /usr/bin/rosdep init && \
+    /usr/bin/rosdep update && \
+    cd /root/catkin_ws && \
+    /opt/ros/melodic/bin/catkin_make && \
+    echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.bashrc && \
+    echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.zshrc
 
 ########################################################
 # Customization for user and location

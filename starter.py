@@ -21,8 +21,8 @@ def start_container(container_name, start_timeout):
         docker_cli.containers.run("moliqingwa/ros-vnc:melodic",
                                   name=container_name,
                                   environment={},  # key=>value
-                                  ports={'6080/tcp': 16080,
-                                         "5900/tcp": 15900,
+                                  ports={'6080-6100/tcp': 16080-6100,
+                                         "5900-5920/tcp": 15900-15920,
                                          },
                                   restart_policy={"Name": "on-failure",
                                                   "MaximumRetryCount": 1,
