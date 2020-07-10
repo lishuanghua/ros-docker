@@ -142,7 +142,6 @@ RUN /bin/bash /root/install-dependencies.sh && rm /root/install-dependencies.sh 
 #     python3-netifaces
 
 # COPY image/rosdep /usr/bin/
-RUN echo "151.101.84.133  raw.githubusercontent.com" >> /etc/hosts
 
 # 替换桌面背景（Dockerfile同目录下有图片screen-4.jpg）
 # COPY ./bg1.jpg  /headless/.config/bg_sakuli.png
@@ -166,11 +165,16 @@ RUN apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
     ldconfig && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir -p /root/catkin_ws/src/ && \
-    /usr/bin/rosdep init && \
-    /usr/bin/rosdep update && \
+RUN echo "151.101.76.133 raw.githubusercontent.com" >> /etc/hosts && \
+    rm -f /root/README.md && \
+    export PYTHONPATH=/opt/ros/melodic/lib/python2.7/dist-packages && \
+    mkdir -p /root/catkin_ws/src/ && \
+    cd /root/catkin_ws/src && \
+    /opt/ros/melodic/bin/catkin_init_workspace && \
     cd /root/catkin_ws && \
-    /opt/ros/melodic/bin/catkin_make && \
+    /usr/bin/rosdep init && \
+    # /usr/bin/rosdep update && \
+    # /opt/ros/melodic/bin/catkin_make && \
     echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.bashrc && \
     echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.zshrc
 
