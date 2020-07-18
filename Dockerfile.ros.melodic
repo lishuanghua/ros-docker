@@ -105,7 +105,10 @@ RUN sh -c '. /etc/lsb-release && echo "deb https://mirrors.tuna.tsinghua.edu.cn/
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
     echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
 RUN apt-get -y install ros-melodic-moveit 
-RUN apt-get -y update && apt-get install -y ros-melodic-trac-ik
+RUN apt-get update && \
+    apt-get install -y \
+    ros-melodic-trac-ik \
+    ros-melodic-rosparam-shortcuts
 
 # 使用Python2
 RUN ln -s -f /usr/bin/python2 /usr/bin/python && \
