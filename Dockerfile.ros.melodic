@@ -108,7 +108,9 @@ RUN apt-get -y install ros-melodic-moveit
 RUN apt-get update && \
     apt-get install -y \
     ros-melodic-trac-ik \
-    ros-melodic-rosparam-shortcuts
+    ros-melodic-rosparam-shortcuts \
+    ros-melodic-ros-control \
+    ros-melodic-ros-controllers
 
 # 使用Python2
 RUN ln -s -f /usr/bin/python2 /usr/bin/python && \
