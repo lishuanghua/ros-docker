@@ -154,7 +154,7 @@ ENV DOCKER_CMD=start_vnc
 USER root
 # 6080: web, 5900: vnc
 EXPOSE 6080 5900
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# RUN ln -s /usr/bin/python3 /usr/bin/python
 ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "/sbin/setuser", "ubuntu"]
 CMD ["$DOCKER_CMD"]
 
