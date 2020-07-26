@@ -94,8 +94,23 @@ RUN git clone https://gitee.com/moliqingwa/websockify.git /usr/local/noVNC/utils
 ########################################################
 # coppeliasim
 ########################################################
-ADD CoppeliaSim_Edu_V4_0_0_Ubuntu18_04.zip /opt/coppelia_sim
-
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+    qt5-default \
+    libavcodec-dev \
+    libavformat-dev \
+    libswscale-dev && \
+    mkdir -p /opt
+COPY CoppeliaSim_Edu_V4_0_0_Ubuntu18_04.tar.xz /opt/
+RUN cd /opt && \
+    tar -xf CoppeliaSim_Edu_V4_0_0_Ubuntu18_04.tar.xz && \
+    rm -rf CoppeliaSim_Edu_V4_0_0_Ubuntu18_04.tar.xz && \
+    echo "export COPPELIASIM_ROOT=/opt/CoppeliaSim_Edu_V4_0_0_Ubuntu18_04" >> /root/.zshrc && \
+    echo "export COPPELIASIM_ROOT=/opt/CoppeliaSim_Edu_V4_0_0_Ubuntu18_04" >> /root/.bashrc && \
+    echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$COPPELIASIM_ROOT" >> /root/.zshrc && \
+    echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$COPPELIASIM_ROOT" >> /root/.bashrc && \
+    echo "export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT" >> /root/.zshrc && \
+    echo "export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT" >> /root/.bashrc 
 
 # Install x11vnc from source
 # Install X-related to compile x11vnc from source code.
