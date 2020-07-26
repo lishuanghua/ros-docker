@@ -20,7 +20,16 @@ TODO
 
 3. ROS2 foxy
 
-TODO
+```
+docker build -t moliqingwa/ros2-vnc:foxy -f Dockerfile.ros2.foxy .
+```
+
+4. CoppeliaSim
+
+下载CoppeliaSim_Edu_V4_0_0_Ubuntu18_04.tar.xz
+```
+docker build -t moliqingwa/coppeliasim-vnc -f Dockerfile.coppeliasim .
+```
 
 
 #### 参与贡献
