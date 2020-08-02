@@ -191,7 +191,7 @@ RUN echo "151.101.76.133 raw.githubusercontent.com" >> /etc/hosts && \
 
 # install protobuf first, then grpc
 ENV GRPC_RELEASE_TAG v1.31.x
-RUN git clone -b ${GRPC_RELEASE_TAG} git@gitee.com:moliqingwa/grpc.git /var/local/git/grpc && \
+RUN git clone -b ${GRPC_RELEASE_TAG} https://gitee.com/moliqingwa/grpc.git /var/local/git/grpc && \
 		cd /var/local/git/grpc && \
     git submodule update --init && \
     echo "--- installing protobuf ---" && \
