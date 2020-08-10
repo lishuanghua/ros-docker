@@ -112,7 +112,8 @@ RUN apt-get update && \
     ros-melodic-ros-control \
     ros-melodic-ros-controllers \
     ros-melodic-pilz-robots \
-    ros-melodic-industrial-core
+    ros-melodic-industrial-core \
+    ros-melodic-rosbridge-server
 
 # Fix industrial_robot_simulator issue
 ADD image/industrial_robot_simulator /opt/ros/melodic/share/industrial_robot_simulator
