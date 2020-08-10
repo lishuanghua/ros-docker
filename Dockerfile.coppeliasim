@@ -100,6 +100,7 @@ RUN apt-get update -y && \
     libavcodec-dev \
     libavformat-dev \
     libswscale-dev && \
+    wget && \
     mkdir -p /opt
 COPY CoppeliaSim_Edu_V4_0_0_Ubuntu18_04.tar.xz /opt/
 RUN cd /opt && \
