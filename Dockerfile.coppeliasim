@@ -113,6 +113,25 @@ RUN cd /opt && \
     echo "export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT" >> /root/.zshrc && \
     echo "export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT" >> /root/.bashrc 
 
+RUN wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/conda.sh && \
+    /bin/bash ~/conda.sh -b -p /opt/conda && \
+    rm ~/conda.sh && \
+    echo '\n\
+        __conda_setup="$('/opt/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"\n\
+        if [ $? -eq 0 ]; then\n\
+            eval "$__conda_setup"\n\
+        else\n\
+            if [ -f "/opt/conda/etc/profile.d/conda.sh" ]; then\n\
+                . "/opt/conda/etc/profile.d/conda.sh"\n\
+            else\n\
+                export PATH="/opt/conda/bin:$PATH"\n\
+            fi\n\
+        fi\n\
+        unset __conda_setup\n'\
+   >> ~/.bashrc && \
+   /bin/bash -c 'source  ~/.bashrc'
+
+
 # Install x11vnc from source
 # Install X-related to compile x11vnc from source code.
 # https://bugs.launchpad.net/ubuntu/+source/x11vnc/+bug/1686084
@@ -129,7 +148,7 @@ RUN apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
     make install && \
     perl -e 's/,\s*ISO_Left_Tab//g' -p -i /usr/share/X11/xkb/symbols/pc && \
     ldconfig && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*ß
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ########################################################
 # Customization for user and location
