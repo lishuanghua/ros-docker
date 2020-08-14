@@ -163,18 +163,7 @@ RUN apt-get install -y libxtst-dev libssl-dev libjpeg-dev && \
     ldconfig && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN echo "151.101.76.133 raw.githubusercontent.com" >> /etc/hosts && \
-    rm -f /root/README.md && \
-    export PYTHONPATH=/opt/ros/melodic/lib/python2.7/dist-packages && \
-    mkdir -p /root/catkin_ws/src/ && \
-    cd /root/catkin_ws/src && \
-    /opt/ros/melodic/bin/catkin_init_workspace && \
-    cd /root/catkin_ws && \
-    /usr/bin/rosdep init && \
-    # /usr/bin/rosdep update && \
-    # /opt/ros/melodic/bin/catkin_make && \
-    echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.bashrc && \
-    echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.zshrc
+
 
 ########################################################
 # Customization for user and location
@@ -215,6 +204,10 @@ RUN mkdir -p $DOCKER_HOME/.config/mozilla && \
 
 WORKDIR $DOCKER_HOME
 
+########################################################
+# ROS PROJECT
+########################################################
+ 
 ########################################################
 # VNC Entry
 ########################################################
