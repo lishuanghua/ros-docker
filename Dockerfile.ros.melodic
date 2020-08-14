@@ -113,7 +113,8 @@ RUN apt-get update && \
     ros-melodic-ros-controllers \
     ros-melodic-pilz-robots \
     ros-melodic-industrial-core \
-    ros-melodic-rosbridge-server
+    ros-melodic-rosbridge-server \
+    ros-melodic-grpc
 
 # Fix industrial_robot_simulator issue
 ADD image/industrial_robot_simulator /opt/ros/melodic/share/industrial_robot_simulator
@@ -141,23 +142,8 @@ RUN /bin/bash /root/install-dependencies.sh && rm /root/install-dependencies.sh 
     /bin/bash /root/install-openrave.sh && rm /root/install-openrave.sh && \
     rm -rf /root/git
 
-# RUN apt-get install -y \
-#     python3-pip \
-#     python3-catkin-pkg \
-#     python3-rosdistro \
-#     python3-rospkg \
-#     python3-rosdep2 \
-#     python3-rosinstall-generator \
-#     python3-rosinstall \
-#     build-essential \
-#     python3-defusedxml \
-#     python3-netifaces
-
-# COPY image/rosdep /usr/bin/
-
 # 替换桌面背景（Dockerfile同目录下有图片screen-4.jpg）
 # COPY ./bg1.jpg  /headless/.config/bg_sakuli.png
-
 
 # Install x11vnc from source
 # Install X-related to compile x11vnc from source code.
@@ -189,21 +175,6 @@ RUN echo "151.101.76.133 raw.githubusercontent.com" >> /etc/hosts && \
     # /opt/ros/melodic/bin/catkin_make && \
     echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.bashrc && \
     echo 'source /root/catkin_ws/devel/setup.bash' >> /root/.zshrc
-
-# install protobuf first, then grpc
-# REFERENCE: https://blog.csdn.net/Bart__/article/details/106992395
-ENV GRPC_RELEASE_TAG=v1.31.x
-COPY cmake-3.16.1-Linux-x86_64.sh .
-RUN /bin/sh cmake-3.16.1-Linux-x86_64.sh -- --skip-license --prefix=/usr && \
-    rm -rf cmake-3.16.1-Linux-x86_64.sh
-RUN git clone -b ${GRPC_RELEASE_TAG} https://gitee.com/moliqingwa/grpc.git /var/local/git/grpc && \
-		cd /var/local/git/grpc && \
-    git submodule update --init && \
-    mkdir -p cmake/build && \
-    cd cmake/build && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF -DgRPC_SSL_PROVIDER=package ../.. && \
-    make install && make clean && ldconfig
-RUN rm -rf /var/local/git/grpc
 
 ########################################################
 # Customization for user and location
