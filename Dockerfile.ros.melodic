@@ -192,17 +192,18 @@ RUN echo "151.101.76.133 raw.githubusercontent.com" >> /etc/hosts && \
 
 # install protobuf first, then grpc
 # REFERENCE: https://blog.csdn.net/Bart__/article/details/106992395
-ENV GRPC_RELEASE_TAG v1.31.x
+ENV GRPC_RELEASE_TAG=v1.31.x
+COPY cmake-3.16.1-Linux-x86_64.sh .
+RUN /bin/sh cmake-3.16.1-Linux-x86_64.sh -- --skip-license --prefix=/usr && \
+    rm -rf cmake-3.16.1-Linux-x86_64.sh
 RUN git clone -b ${GRPC_RELEASE_TAG} https://gitee.com/moliqingwa/grpc.git /var/local/git/grpc && \
 		cd /var/local/git/grpc && \
     git submodule update --init && \
-    echo "--- installing protobuf ---" && \
-    cd third_party/protobuf && \
-    ./autogen.sh && ./configure --enable-shared && \
-    make -j$(nproc) && make -j$(nproc) check && make install && make clean && ldconfig && \
-    echo "--- installing grpc ---" && \
-    cd /var/local/git/grpc && \
-    make -j$(nproc) && make install && make clean && ldconfig
+    mkdir -p cmake/build && \
+    cd cmake/build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DgRPC_INSTALL=ON -DgRPC_BUILD_TESTS=OFF -DgRPC_SSL_PROVIDER=package ../.. && \
+    make install && make clean && ldconfig
+RUN rm -rf /var/local/git/grpc
 
 ########################################################
 # Customization for user and location
