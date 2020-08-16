@@ -75,10 +75,10 @@ RUN apt-get update && \
     ln -s -f /usr/bin/python3 /usr/bin/python && \
     ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
     perl -p -i -e 's/#?X11Forwarding\s+\w+/X11Forwarding yes/g; \
-        s/#?X11UseLocalhost\s+\w+/X11UseLocalhost no/g; \
-        s/#?PasswordAuthentication\s+\w+/PasswordAuthentication no/g; \
-        s/#?PermitEmptyPasswords\s+\w+/PermitEmptyPasswords no/g' \
-        /etc/ssh/sshd_config && \
+    s/#?X11UseLocalhost\s+\w+/X11UseLocalhost no/g; \
+    s/#?PasswordAuthentication\s+\w+/PasswordAuthentication no/g; \
+    s/#?PermitEmptyPasswords\s+\w+/PermitEmptyPasswords no/g' \
+    /etc/ssh/sshd_config && \
     rm -f /etc/update-motd.d/??-unminimize && \
     rm -f /etc/xdg/autostart/lxpolkit.desktop && \
     chmod a-x /usr/bin/lxpolkit && \
@@ -140,7 +140,7 @@ RUN /bin/bash /root/install-dependencies.sh && rm /root/install-dependencies.sh 
     /bin/bash /root/install-osg.sh && rm /root/install-osg.sh && \
     /bin/bash /root/install-fcl.sh && rm /root/install-fcl.sh && \
     /bin/bash /root/install-openrave.sh && rm /root/install-openrave.sh && \
-    rm -rf /root/git
+    rm -rf /root/git && rm -rf /root/README.md
 
 # 替换桌面背景（Dockerfile同目录下有图片screen-4.jpg）
 # COPY ./bg1.jpg  /headless/.config/bg_sakuli.png
@@ -207,7 +207,7 @@ WORKDIR $DOCKER_HOME
 ########################################################
 # ROS PROJECT
 ########################################################
- 
+
 ########################################################
 # VNC Entry
 ########################################################
@@ -217,5 +217,6 @@ ENV DOCKER_CMD=start_vnc
 USER root
 # 6080: web, 5900: vnc
 EXPOSE 6080 5900
-ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "/sbin/setuser", "ubuntu"]
+# ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "/sbin/setuser", "ubuntu"]
+ENTRYPOINT ["/sbin/my_init", "--quiet"]
 CMD ["$DOCKER_CMD"]
