@@ -105,6 +105,7 @@ RUN sh -c '. /etc/lsb-release && echo "deb https://mirrors.tuna.tsinghua.edu.cn/
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
     echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
 RUN apt-get -y install ros-melodic-moveit && \
+    ros-melodic-moveit-ros-visualization && \
     ros-melodic-moveit-visual-tools
 RUN apt-get update && \
     apt-get install -y \
