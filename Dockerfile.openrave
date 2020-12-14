@@ -1,0 +1,145 @@
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV HOME /root
+
+ARG DOCKER_LANG=en_US
+ARG DOCKER_TIMEZONE=Asia/Shanghai
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:UTF-8 \
+    LC_ALL=en_US.UTF-8
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
+ADD image/etc /etc
+RUN rm -f /etc/apt/sources.list && \
+    mv /etc/apt/sources.18.04.list /etc/apt/sources.list
+
+# 20.04替换成18.04 (focal => bionic)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    apt-utils \
+    apt-transport-https \
+    libxtst-dev \
+    libssl-dev \
+    libjpeg-dev \
+    apt-file \
+    locales \
+    language-pack-en && \
+    locale-gen $LANG && \
+    apt-get clean && \
+    apt-get upgrade -y && \
+    dpkg-reconfigure -f noninteractive locales && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    vim \
+    curl \
+    psmisc \
+    runit \
+    software-properties-common \
+    net-tools \
+    gpg-agent \
+    inetutils-ping \
+    build-essential \
+    libssl-dev \
+    git \
+    openssh-server \
+    python3 \
+    python3-distutils \
+    python3-tk \
+    python3-dbus \
+    xserver-xorg-video-dummy \
+    lxde \
+    x11-xserver-utils \
+    tftp \
+    lsb-core \
+    supervisor \
+    openssh-server \
+    vim-tiny \
+    xfce4 \
+    xfce4-goodies \
+    x11vnc \
+    xvfb \
+    pwgen \
+    sudo \
+    csh \
+    tcsh \
+    zsh \
+    dirmngr \
+    aptitude \
+    firefox && \
+    chmod 755 /usr/local/share/zsh/site-functions && \
+    apt-get autoclean && \
+    apt-get autoremove && \
+    apt-get clean && \
+    ssh-keygen -A && \
+    ln -s -f /usr/bin/python3 /usr/bin/python && \
+    ln -s -f /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so && \
+    perl -p -i -e 's/#?X11Forwarding\s+\w+/X11Forwarding yes/g; \
+    s/#?X11UseLocalhost\s+\w+/X11UseLocalhost no/g; \
+    s/#?PasswordAuthentication\s+\w+/PasswordAuthentication no/g; \
+    s/#?PermitEmptyPasswords\s+\w+/PermitEmptyPasswords no/g' \
+    /etc/ssh/sshd_config && \
+    rm -f /etc/update-motd.d/??-unminimize && \
+    rm -f /etc/xdg/autostart/lxpolkit.desktop && \
+    chmod a-x /usr/bin/lxpolkit && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Clone noVNC.
+RUN git clone https://gitee.com/moliqingwa/noVNC.git /usr/local/noVNC
+RUN cp /usr/local/noVNC/vnc.html /usr/local/noVNC/index.html
+
+# Clone websockify for noVNC
+RUN git clone https://gitee.com/moliqingwa/websockify.git /usr/local/noVNC/utils/websockify
+
+########################################################
+# ROS
+########################################################
+WORKDIR /opt/ros/melodic
+
+# 安装ROS及其编译工具，配置ROS环境
+# 安装turtlesim功能包
+RUN sh -c '. /etc/lsb-release && echo "deb https://mirrors.tuna.tsinghua.edu.cn/ros/ubuntu/ `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list' && \
+    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
+    apt-get -y update && \
+    apt-get -y install ros-melodic-desktop-full && \
+    echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc && \
+    echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
+RUN apt-get -y install ros-melodic-moveit
+RUN apt-get update && \
+    apt-get install -y \
+    ros-melodic-trac-ik \
+    ros-melodic-rosparam-shortcuts \
+    ros-melodic-ros-control \
+    ros-melodic-ros-controllers \
+    ros-melodic-pilz-robots \
+    ros-melodic-industrial-core \
+    ros-melodic-rosbridge-server \
+    ros-melodic-grpc
+
+# Fix industrial_robot_simulator issue
+ADD image/industrial_robot_simulator /opt/ros/melodic/share/industrial_robot_simulator
+RUN chmod a+x /opt/ros/melodic/share/industrial_robot_simulator
+
+# 使用Python2
+RUN ln -s -f /usr/bin/python2 /usr/bin/python && \
+    apt-get install -y \
+    ros-melodic-exotica \
+    ros-melodic-moveit-pr2 \
+    python-pip \
+    python-rosdep \
+    python-rosinstall \
+    python-rosinstall-generator \
+    python-catkin-pkg \
+    python-catkin-tools
+
+# ikfast
+COPY boost_1_58_0.tar.gz /root
+COPY openrave-installation /root
+
+RUN /bin/bash /root/install-dependencies.sh && rm /root/install-dependencies.sh && \
+    /bin/bash /root/install-osg.sh && rm /root/install-osg.sh && \
+    /bin/bash /root/install-fcl.sh && rm /root/install-fcl.sh && \
+    /bin/bash /root/install-openrave.sh && rm /root/install-openrave.sh && \
+    rm -rf /root/git && rm -rf /root/README.md
+
+
