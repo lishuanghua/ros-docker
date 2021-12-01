@@ -137,7 +137,6 @@ COPY boost_1_58_0.tar.gz /root
 COPY openrave-installation /root
 
 RUN /bin/bash /root/install-dependencies.sh && rm /root/install-dependencies.sh && \
-    /bin/bash /root/install-osg.sh && rm /root/install-osg.sh && \
     /bin/bash /root/install-fcl.sh && rm /root/install-fcl.sh && \
     /bin/bash /root/install-openrave.sh && rm /root/install-openrave.sh && \
     rm -rf /root/git && rm -rf /root/README.md
